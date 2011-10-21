@@ -38,6 +38,17 @@
   (get8 [t])
   (get9 [t]))
 
+(defprotocol ITuple
+  (tuple? [obj]))
+
+(extend-type Object
+  ITuple
+  (tuple? [obj]
+    (extend-type (class obj)
+      ITuple
+      (tuple? [obj] false))
+    false))
+
 (defmacro tuple-for [n & {:keys [class-name map-entry-class]}]
   (let [class-name (symbol (or class-name (format "Tuple%s" n)))
         fields (into {} (for [i (range n)]
@@ -57,6 +68,8 @@
                          ~(get fields 1))
                (setValue [v# _#]
                          (throw (UnsupportedOperationException.)))])
+         ITuple
+         (tuple? [obj] true)
          TupleAccess
          ~@(for [i (range 10)]
              `(~(symbol (str "get" i)) [~'t]
