@@ -1,0 +1,25 @@
+# tuples
+
+tuples for clojure, with fast element access
+
+## Usage
+
+tuples.core> (tuple 1 2)
+[1 2]
+tuples.core> (tuple 1 2 3)
+[1 2 3]
+tuples.core> (tuple 1 2 3 4)
+[1 2 3 4]
+tuples.core> (tuple 1 2 3 "foo")
+[1 2 3 "foo"]
+tuples.core> (get0 (tuple 1 2 3 "foo"))
+1
+tuples.core> (get3 (tuple 1 2 3 "foo"))
+"foo"
+tuples.core> 
+
+## License
+
+Copyright (C) 2011 Kevin Downey
+
+Distributed under the Eclipse Public License, the same as Clojure.
