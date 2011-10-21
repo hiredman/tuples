@@ -12,6 +12,10 @@
     (if (zero? (count tup))
       (is (empty? tup))
       (is (not (empty? tup)))))
+  (doseq [elements (take-while seq (iterate pop (vec (range 0 9))))
+          :let [tup (apply tuple elements)]]
+    (is (thrown? Exception ((resolve (symbol (str "get" (count elements))))
+                            tup))))
   (is (= [:a :b] (tuple :a :b)))
   (is (= 1 (.get (tuple 4 5 3 1 2) 3)))
   (let [x {:a 1}
