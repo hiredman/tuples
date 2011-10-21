@@ -18,6 +18,18 @@ tuples.core> (get3 (tuple 1 2 3 "foo"))
 "foo"
 tuples.core> 
 
+## Performance
+
+;; run on a macbook pro with  java 7 preview
+;; Fri Oct 21 12:51:51 2011
+tuples.core> (let [n 1e10 t (tuple 1 2) v (vector 1 2)]
+               (time (dotimes [_ n] (get0 t)))
+               (time (dotimes [_ n] (nth v 0))))
+"Elapsed time: 7870.339 msecs"
+"Elapsed time: 130419.589 msecs"
+nil
+tuples.core> 
+
 ## License
 
 Copyright (C) 2011 Kevin Downey
