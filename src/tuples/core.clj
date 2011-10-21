@@ -14,6 +14,7 @@
                          ILookup
                          Seqable
                          IMapEntry
+                         MapEntry
                          RT)
            (java.util RandomAccess List Collection
                       Map$Entry)
@@ -23,7 +24,9 @@
   ^{:inline (fn [& args]
               (let [class-name (symbol (format "tuples.core.Tuple%s"
                                                (count args)))]
-                `(new ~class-name ~@args {})))}
+                `(new ~class-name
+                      (into-array Object [~@args])
+                      ~@args {})))}
   tuple (comp count list))
 
 (defprotocol TupleAccess
@@ -42,10 +45,11 @@
   (let [class-name (symbol (format "Tuple%s" n))
         fields (into {} (for [i (range n)]
                           [i (symbol (format "e%s" (inc i)))]))
-        low-end (dec n)
-        high-end (inc n)]
+        field-names (map second (sort-by first fields))
+        ary (with-meta 'ary
+              {:tag "[Ljava.lang.Object;"})]
     `(do
-       (deftype ~class-name [~@(map second (sort-by first fields)) md#]
+       (deftype ~class-name [~ary ~@field-names md#]
          ~@(when (= n 2)
              `[IMapEntry
                (key [v#]
@@ -67,19 +71,13 @@
                   (get fields i))))
          Associative
          (containsKey [v# key#]
-           (if (and (Util/isInteger key#)
-                    (> ~(inc n) key# ~(dec n)))
-             true
-             false))
+           (and (Util/isInteger key#)
+                (<= 0 key# ~(dec n))))
          (entryAt [v# key#]
-           (if (Util/isInteger key#)
+           (when (Util/isInteger key#)
              (let [key# (int key#)]
-               (case key#
-                     ~@(for [[idx n] fields
-                             itm [idx [idx n]]]
-                         itm)
-                     nil))
-             nil))
+               (when (< key# ~n)
+                 (MapEntry. key# (aget ~ary key#))))))
          (assoc [v# key# val#]
            (.assocN v# key# val#))
          Sequential ; Marker
@@ -95,14 +93,10 @@
          (nth [v# i#]
            (.nth v# i# nil))
          (nth [v# i# not-found#]
-           (if (Util/isInteger i#)
-             (let [i# (int i#)]
-               (case i#
-                     ~@(for [[idx n] fields
-                             itm [idx n]]
-                         itm)
-                     not-found#))
-             not-found#))
+           (let [i# (int i#)]
+             (if (< i# ~n)
+               (aget ~ary i#)
+               not-found#)))
          Counted
          (count [v#] ~n)
          IPersistentVector
@@ -113,14 +107,7 @@
            (throw (UnsupportedOperationException.)))
          IFn
          (invoke [v# arg1#]
-           (let [arg1# (int arg1#)]
-             (if (Util/isInteger arg1#)
-               (case arg1#
-                     ~@(for [[idx n] fields
-                             itm [idx n]]
-                         itm)
-                     nil)
-               (throw (IllegalArgumentException. "Key must be integer")))))
+           (.nth v# arg1#))
          IObj
          (withMeta [v# m#]
            (throw (UnsupportedOperationException.)))
@@ -136,7 +123,7 @@
              false))
          Seqable
          (seq [v#]
-           (list ~@(map second (sort-by first fields))))
+           (seq ~ary))
          ILookup
          (valAt [v# key#]
            (.nth v# key# nil))
@@ -180,7 +167,8 @@
          (toArray [v#]
            (RT/seqToArray (.seq v#)))
          (toArray [v# obj#]
-           (throw (UnsupportedOperationException.)))
+           ; TODO bounds checking technically required
+           (System/arraycopy ~ary 0 obj# 0 ~n))
          (addAll [v# collection#]
            (throw (UnsupportedOperationException.)))
          (iterator [v#]
@@ -211,8 +199,10 @@
                   0)))))
          Serializable ; Marker
          )
-       (defmethod tuple ~n [~@(map second(sort-by first fields))]
-         (new ~class-name ~@(map second(sort-by first fields)) {})))))
+       (defmethod tuple ~n [~@field-names]
+         (new ~class-name
+              (into-array Object [~@field-names])
+              ~@field-names {})))))
 
 (defmacro generate-tuples []
   `(do
