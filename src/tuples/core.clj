@@ -139,7 +139,7 @@
                (throw (IllegalArgumentException. "Key must be integer")))))
          IObj
          (withMeta [v# m#]
-           (throw (UnsupportedOperationException.)))
+           (new ~class-name ~@(map second (sort-by first fields)) m#))
          IMeta
          (meta [v#] md#)
          IPersistentCollection
