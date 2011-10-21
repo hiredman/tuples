@@ -156,6 +156,10 @@
                          itm)
                      nil)
                (throw (IllegalArgumentException. "Key must be integer")))))
+         ~@(for [i (range 3 21)]
+             `(invoke ~(vec (map gensym (range i)))
+                      (throw (IllegalArgumentException.
+                              (str ~(dec i) " args used for " ~n "-tuple")))))
          IObj
          (withMeta [v# m#]
            (new ~class-name ~@(map second (sort-by first fields)) m#))
