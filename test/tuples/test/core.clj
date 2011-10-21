@@ -24,4 +24,7 @@
     (is (= x (meta (with-meta tup x)))))
   (is (tuple? (tuple 1 2 3)))
   (is (every? true? (map tuple? (repeat 5 (tuple 1 2 3)))))
-  (is (not (tuple? 10))))
+  (is (not (tuple? 10)))
+  (is (= 3 (.lastIndexOf (tuple 4 4 4 4) 4)))
+  (is (.contains (tuple [:a :b :c :d]) 1))
+  (is (not (.contains (tuple [:a :b]) 2))))
