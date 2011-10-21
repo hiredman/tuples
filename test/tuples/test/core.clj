@@ -1,7 +1,6 @@
 (ns tuples.test.core
   (:use [tuples.core :only [generate-tuples tuple?]])
-  (:use [clojure.test])
-  (:require [tuples.core :as tuples]))
+  (:use [clojure.test]))
 
 (generate-tuples)
 
@@ -10,15 +9,16 @@
           :let [tup (apply tuple elements)]
           element elements]
     (are [x y] (= x y)
-         element ((resolve (symbol "tuples" (str "get" element))) tup)
+         element ((ns-resolve (create-ns 'tuples.core)
+                              (symbol (str "get" element))) tup)
          [element element] (.entryAt tup element))
     (if (zero? (count tup))
       (is (empty? tup))
       (is (not (empty? tup)))))
   (doseq [elements (take-while seq (iterate pop (vec (range 0 9))))
           :let [tup (apply tuple elements)]]
-    (is (thrown? Exception ((resolve (symbol "tuples"
-                                             (str "get" (count elements))))
+    (is (thrown? Exception ((ns-resolve (create-ns 'tuples.core)
+                                        (symbol (str "get" (count elements))))
                             tup))))
   (let [x {:a 1}
         tup (tuple 1)]
