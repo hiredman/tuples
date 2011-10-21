@@ -19,12 +19,7 @@
                       Map$Entry)
            (java.io Serializable)))
 
-(defmulti
-  ^{:inline (fn [& args]
-              (let [class-name (symbol (format "tuples.core.Tuple%s"
-                                               (count args)))]
-                `(new ~class-name ~@args {})))}
-  tuple (comp count list))
+
 
 (defprotocol TupleAccess
   (get0 [t])
@@ -244,11 +239,19 @@
          (new ~class-name ~@(map second(sort-by first fields)) {})))))
 
 (defmacro generate-tuples []
-  `(do
-     ;; Screw it, using Tuple2 for a mapentry was just too much of a
-     ;; pain, kept getting slimed
-     (tuple-for 2 :class-name "TMapEntry")
-     ~@(for [i (range 11)]
-         `(tuple-for ~i :map-entry-class "TMapEntry"))))
+  (let [ns (ns-name *ns*)]
+    `(do
+       (defmulti
+         ^{:inline (fn [& ~'args]
+                     (let [class-name# (symbol (format "%s.Tuple%s"
+                                                       '~ns
+                                                       (count ~'args)))]
+                       `(new ~class-name# ~@~'args {})))}
+         tuple (comp count list))
+       ;; Screw it, using Tuple2 for a mapentry was just too much of a
+       ;; pain, kept getting slimed
+       (tuple-for 2 :class-name "TMapEntry")
+       ~@(for [i (range 11)]
+           `(tuple-for ~i :map-entry-class "TMapEntry")))))
 
 (generate-tuples)

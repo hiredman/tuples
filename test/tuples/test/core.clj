@@ -19,4 +19,5 @@
     (is (= {} (meta tup)))
     (is (= x (meta (with-meta tup x)))))
   (is (tuple? (tuple 1 2 3)))
+  (is (every? true? (map tuple? (repeat 5 (tuple 1 2 3)))))
   (is (not (tuple? 10))))
