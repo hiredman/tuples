@@ -73,10 +73,7 @@
                   (get fields i))))
          Associative
          (containsKey [v# key#]
-           (if (and (Util/isInteger key#)
-                    (> ~(inc n) key# ~(dec n)))
-             true
-             false))
+           (.contains v# key#))
          (entryAt [v# key#]
            (if (Util/isInteger key#)
              (let [key# (int key#)]
@@ -214,8 +211,7 @@
          (isEmpty [v#] ~(zero? n))
          (contains [v# k#]
            (and (Util/isInteger k#)
-                (> ~(inc n) (long k#))
-                (> (long k#) -1)))
+                (> ~n (long k#) -1)))
          (size [v#]
            ~n)
          (toArray [v#]
@@ -225,11 +221,7 @@
          (addAll [v# collection#]
            (throw (UnsupportedOperationException.)))
          (iterator [v#]
-           (.iterator (.seq v#)))
-          (removeAll [v# c#]
-            (throw (UnsupportedOperationException.)))
-          (retainAll [v# c#]
-            (throw (UnsupportedOperationException.)))
+           (.iterator (vec v#)))
          (add [v# obj#]
            (throw (UnsupportedOperationException.))) 
          (clear [v#]
