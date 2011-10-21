@@ -73,8 +73,10 @@
            (if (Util/isInteger key#)
              (let [key# (int key#)]
                (case key#
-                     ~@(for [[idx n] fields
-                             itm [idx [idx n]]]
+                     ~@(for [[idx fn] fields
+                             itm [idx (if (= n 2)
+                                        `(new ~class-name ~idx ~fn {})
+                                        `(tuple ~idx ~fn))]]
                          itm)
                      nil))
              nil))
