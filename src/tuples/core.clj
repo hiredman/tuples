@@ -186,7 +186,7 @@
                 itm)
             :else -1))
          Collection
-         (isEmpty [v#] false)
+         (isEmpty [v#] ~(zero? n))
          (contains [v# k#]
            (and (Util/isInteger k#)
                 (> ~(inc n) (long k#))
