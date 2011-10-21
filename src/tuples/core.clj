@@ -140,6 +140,7 @@
                                                 fn))
                                           {})]]
                        itm)
+                   ~(inc n) (.cons v# ~'val)
                    (throw (IllegalArgumentException.
                            (str "Key " i# " is out of range for a "
                                 ~n "-tuple"))))))
