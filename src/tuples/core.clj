@@ -41,9 +41,7 @@
 (defmacro tuple-for [n]
   (let [class-name (symbol (format "Tuple%s" n))
         fields (into {} (for [i (range n)]
-                          [i (symbol (format "e%s" (inc i)))]))
-        low-end (dec n)
-        high-end (inc n)]
+                          [i (symbol (format "e%s" (inc i)))]))]
     `(do
        (deftype ~class-name [~@(map second (sort-by first fields)) md#]
          ~@(when (= n 2)
