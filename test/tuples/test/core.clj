@@ -27,4 +27,9 @@
   (is (not (tuple? 10)))
   (is (= 3 (.lastIndexOf (tuple 4 4 4 4) 4)))
   (is (.contains (tuple [:a :b :c :d]) 1))
-  (is (not (.contains (tuple [:a :b]) 2))))
+  (is (not (.contains (tuple [:a :b]) 2)))
+  (is (= {:a 1 :b 2}
+         (into {} [(tuple :a 1) (tuple :b 2)])))
+  (is (= [1 2 :a 4] (assoc (tuple 1 2 3 4) 2 :a)))
+  (is (empty? (tuple)))
+  (is (not (empty? (tuple 1 2)))))

@@ -171,7 +171,9 @@
              false))
          Seqable
          (seq [v#]
-           (list ~@(map second (sort-by first fields))))
+           ~(if (zero? n)
+              `(seq ())
+              `(list ~@(map second (sort-by first fields)))))
          ILookup
          (valAt [v# key#]
            (.nth v# key# nil))
