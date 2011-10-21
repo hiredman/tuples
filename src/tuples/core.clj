@@ -68,7 +68,7 @@
          TupleAccess
          ~@(for [i (range 10)]
              `(~(symbol (str "get" i)) [~'t]
-               ~(if (> i n)
+               ~(if (>= i n)
                   `(throw (UnsupportedOperationException.))
                   (get fields i))))
          Associative
