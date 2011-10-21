@@ -233,4 +233,3 @@
          `(tuple-for ~i))))
 
 (generate-tuples)
-
