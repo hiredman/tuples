@@ -95,17 +95,13 @@
          (peek [v#]
            ~(second (last (sort-by first fields))))
          (pop [~'v]
-           ~(cond
-             (zero? n)
-             `(throw (UnsupportedOperationException.))
-             (= 1 n)
-             `(apply tuple nil)
-             :else
-             `(with-meta
-                (apply tuple (list ~@(butlast
-                                      (map second
-                                           (sort-by first fields)))))
-                (meta ~'v))))
+           ~(if (zero? n)
+              `(throw (UnsupportedOperationException.))
+              `(with-meta
+                 (apply ~'tuple (list ~@(butlast
+                                         (map second
+                                              (sort-by first fields)))))
+                 (meta ~'v))))
          Reversible
          (rseq [v#]
            (throw (UnsupportedOperationException.)))
