@@ -118,9 +118,11 @@
                      not-found#))
              not-found#))
          Counted
-         (count [v#] ~n)
+         (count [v#]
+           ~n)
          IPersistentVector
-         (length [v#] ~n)
+         (length [v#]
+           ~n)
          (assocN [v# i# ~'val]
            (let [i# (int i#)]
              (case i#
@@ -204,7 +206,8 @@
                 itm)
             :else -1))
          Collection
-         (isEmpty [v#] ~(zero? n))
+         (isEmpty [v#]
+           ~(zero? n))
          (contains [v# k#]
            (and (Util/isInteger k#)
                 (> ~n (long k#) -1)))
@@ -218,8 +221,12 @@
            (throw (UnsupportedOperationException.)))
          (iterator [v#]
            (.iterator (vec v#)))
+         (removeAll [v# c#]
+           (throw (UnsupportedOperationException.)))
+         (retainAll [v# c#]
+           (throw (UnsupportedOperationException.)))
          (add [v# obj#]
-           (throw (UnsupportedOperationException.))) 
+           (throw (UnsupportedOperationException.)))
          (clear [v#]
            (throw (UnsupportedOperationException.)))
          Comparable
