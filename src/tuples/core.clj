@@ -240,7 +240,7 @@
                   0)))))
          Serializable ; Marker
          )
-       (defmethod tuple ~n [~@(map second(sort-by first fields))]
+       (defmethod ~'tuple ~n [~@(map second(sort-by first fields))]
          (new ~class-name ~@(map second(sort-by first fields)) {})))))
 
 (defmacro generate-tuples []
@@ -252,7 +252,7 @@
                                                        '~ns
                                                        (count ~'args)))]
                        `(new ~class-name# ~@~'args nil)))}
-         tuple (comp count list))
+         ~'tuple (comp count list))
        ;; Screw it, using Tuple2 for a mapentry was just too much of a
        ;; pain, kept getting slimed
        (tuple-for 2 :class-name "TMapEntry")
