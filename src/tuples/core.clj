@@ -233,7 +233,7 @@
 (defmacro generate-tuples []
   `(do
      (tuple-for 2 :class-name "TMapEntry")
-     ~@(for [i (range 10)]
+     ~@(for [i (range 11)]
          `(tuple-for ~i :map-entry-class "TMapEntry"))))
 
 (generate-tuples)
