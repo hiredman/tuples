@@ -38,8 +38,8 @@
   (get8 [t])
   (get9 [t]))
 
-(defmacro tuple-for [n]
-  (let [class-name (symbol (format "Tuple%s" n))
+(defmacro tuple-for [n & {:keys [class-name map-entry-class]}]
+  (let [class-name (symbol (or class-name (format "Tuple%s" n)))
         fields (into {} (for [i (range n)]
                           [i (symbol (format "e%s" (inc i)))]))]
     `(do
@@ -74,9 +74,10 @@
              (let [key# (int key#)]
                (case key#
                      ~@(for [[idx fn] fields
-                             itm [idx (if (= n 2)
-                                        `(new ~class-name ~idx ~fn {})
-                                        `(tuple ~idx ~fn))]]
+                             itm [idx (if map-entry-class
+                                        `(new ~(symbol map-entry-class)
+                                              ~idx ~fn {})
+                                        (first {idx fn}))]]
                          itm)
                      nil))
              nil))
@@ -231,7 +232,8 @@
 
 (defmacro generate-tuples []
   `(do
+     (tuple-for 2 :class-name "TMapEntry")
      ~@(for [i (range 10)]
-         `(tuple-for ~i))))
+         `(tuple-for ~i :map-entry-class "TMapEntry"))))
 
 (generate-tuples)
