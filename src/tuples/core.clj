@@ -232,6 +232,8 @@
 
 (defmacro generate-tuples []
   `(do
+     ;; Screw it, using Tuple2 for a mapentry was just too much of a
+     ;; pain, kept getting slimed
      (tuple-for 2 :class-name "TMapEntry")
      ~@(for [i (range 11)]
          `(tuple-for ~i :map-entry-class "TMapEntry"))))
