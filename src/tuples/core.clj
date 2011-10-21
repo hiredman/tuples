@@ -160,7 +160,7 @@
          (withMeta [v# m#]
            (new ~class-name ~@(map second (sort-by first fields)) m#))
          IMeta
-         (meta [v#] md#)
+         (meta [v#] (if md# md# {}))
          IPersistentCollection
          (empty [v#] [])
          (equiv [v1# v2#]
@@ -257,7 +257,7 @@
                      (let [class-name# (symbol (format "%s.Tuple%s"
                                                        '~ns
                                                        (count ~'args)))]
-                       `(new ~class-name# ~@~'args {})))}
+                       `(new ~class-name# ~@~'args nil)))}
          tuple (comp count list))
        ;; Screw it, using Tuple2 for a mapentry was just too much of a
        ;; pain, kept getting slimed
