@@ -79,7 +79,9 @@
                      nil))
              nil))
          (assoc [v# key# val#]
-           (.assocN v# key# val#))
+           (if (Util/isInteger key#)
+             (.assocN v# key# val#)
+             (throw (IllegalArgumentException. "Key must be an integer"))))
          Sequential ; Marker
          IPersistentStack
          (peek [v#]
@@ -105,8 +107,21 @@
          (count [v#] ~n)
          IPersistentVector
          (length [v#] ~n)
-         (assocN [v# i# val#]
-           (throw (UnsupportedOperationException.)))
+         (assocN [v# i# ~'val]
+           (let [i# (int i#)]
+             (case i#
+                   ~@(for [[idx n] fields
+                           itm [idx `(new ~class-name
+                                          ~@(for [[idx2 fn]
+                                                  (sort-by first fields)]
+                                              (if (= idx idx2)
+                                                'val
+                                                fn))
+                                          {})]]
+                       itm)
+                   (throw (IllegalArgumentException.
+                           (str "Key " i# " is out of range for a "
+                                ~n "-tuple"))))))
          (cons [v# o#]
            (throw (UnsupportedOperationException.)))
          IFn
