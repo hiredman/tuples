@@ -161,7 +161,7 @@
          IMeta
          (meta [v#] (if md# md# {}))
          IPersistentCollection
-         (empty [v#] [])
+         (empty [v#] (apply ~'tuple nil))
          (equiv [v1# v2#]
            (if (instance? Sequential v2#)
              (if (= (count v2#) ~n)
