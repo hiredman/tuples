@@ -1,3 +1,3 @@
-(defproject tuples "0.0.1-SNAPSHOT"
+(defproject tuples "1.0.0-SNAPSHOT"
   :description "tuples for clojure"
-  :dependencies [[org.clojure/clojure "1.3.0"]])
+  :dependencies [[org.clojure/clojure "1.4.0"]])
