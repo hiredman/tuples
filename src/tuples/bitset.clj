@@ -1,5 +1,5 @@
 (ns tuples.bitset
-  (refer-clojure :exclude [and get set or])
+  (:refer-clojure :exclude [and get set or])
   (:require [clojure.core :as cc]))
 
 (set! *unchecked-math* true)
@@ -83,7 +83,7 @@
                                                      [(symbol (str "bitset" i))])
                                                  ~@(take i (assoc padded-fields
                                                              quo `(mask (mod ~'idx 64)
-                                                                        (bit-or ~(get padded-fields (dec i) 0)
+                                                                        (bit-or ~(cc/get padded-fields (dec i) 0)
                                                                                 ~'m)))))]]
                                      item))))]]
                  item)
@@ -98,7 +98,7 @@
                                  ~@(for [quo (range bit-set-limit)
                                          item [quo
                                                `(let [m# (mask (mod ~'idx 64)
-                                                               (bit-and ~(get padded-fields (dec i)) ~'m))]
+                                                               (bit-and ~(cc/get padded-fields (dec i)) ~'m))]
                                                   (not (zero? (shift (mod ~'idx 64) m#))))]]
                                      item))))]]
                  item)
@@ -158,21 +158,3 @@
      (bitset 0))
   ([l]
      (bitset1 l)))
-
-(defn hash-into [bs ^String word]
-  (reduce
-   (fn [bs h]
-     (let [bit (mod (h (.getBytes word) 0 (count word)) 128)]
-         (set bs bit)))
-   bs
-   [h1 h2 h3 h4 h5 h6 h7]))
-
-(defn does-contain [bs ^String word]
-  (let [bs' (reduce
-            (fn [bs h]
-              (let [bit (mod (h (.getBytes word) 0 (count word)) 128)]
-                (bitset)))
-            bs
-            [h1 h2 h3 h4 h5 h6 h7])
-        bs'' (and bs bs')]
-    (= bs'' bs')))
