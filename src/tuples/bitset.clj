@@ -117,6 +117,13 @@
                                        `(bit-and (nth ~'bs1 ~c 0)
                                                  (nth ~'bs2 ~c 0))))]]
                      item)))))
+         (to-bytes [bs]
+           (let [~'bb (java.nio.ByteBuffer/allocate
+                       ~(+ 2 (* 8 n)))]
+             (.putShort ~'bb (short ~n))
+             ~@(for [field fields]
+                 `(.putLong ~'bb ~field))
+             (.array ~'bb)))
          clojure.lang.Indexed
          (nth [t# i#]
            (.nth t# i# nil))
@@ -158,3 +165,12 @@
      (bitset 0))
   ([l]
      (bitset1 l)))
+
+(defn read-bitset [bytes]
+  (let [bb (java.nio.ByteBuffer/wrap bytes)
+        cap (.getShort bb)]
+    (apply
+     (ns-resolve (create-ns 'tuples.bitset)
+                 (symbol (str "bitset" cap)))
+     (for [i (range cap)]
+       (.getLong bb)))))

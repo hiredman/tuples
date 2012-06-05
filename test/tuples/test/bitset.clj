@@ -18,3 +18,6 @@
   (let [bs (bs/bitset)]
     (dotimes [i 500]
       (is (= true (bs/get (bs/set bs i) i))))))
+
+(deftest t-bytes
+  (is (bs/get (bs/read-bitset (bs/to-bytes (bs/set (bs/bitset) 300))) 300)))
