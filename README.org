@@ -1,5 +1,5 @@
 #+TITLE: tuples
-* tuples
+* Description
 
 tuples for clojure, with fast element access
 
