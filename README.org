@@ -1,24 +1,33 @@
-# tuples
+#+TITLE: tuples
+* tuples
 
 tuples for clojure, with fast element access
 
-## Usage
+* Usage
 
-tuples.core> (tuple 1 2)
+- add to your project.clj:
+#+BEGIN_SRC clojure
+[tuples 0.0.1]
+#+END_SRC
+
+#+BEGIN_SRC clojure
+;=> (use 'tuples.core)
+nil
+;=> (tuple 1 2)
 [1 2]
-tuples.core> (tuple 1 2 3)
+;=> (tuple 1 2 3)
 [1 2 3]
-tuples.core> (tuple 1 2 3 4)
+;=> (tuple 1 2 3 4)
 [1 2 3 4]
-tuples.core> (tuple 1 2 3 "foo")
+;=> (tuple 1 2 3 "foo")
 [1 2 3 "foo"]
-tuples.core> (get0 (tuple 1 2 3 "foo"))
+;=> (get0 (tuple 1 2 3 "foo"))
 1
-tuples.core> (get3 (tuple 1 2 3 "foo"))
+;=> (get3 (tuple 1 2 3 "foo"))
 "foo"
-tuples.core> 
+#+END_SRC
 
-## Performance
+* Performance
 
 ;; run on a macbook pro with  java 7 preview
 ;; Fri Oct 21 12:51:51 2011
@@ -30,8 +39,8 @@ tuples.core> (let [n 1e10 t (tuple 1 2) v (vector 1 2)]
 nil
 tuples.core> 
 
-## License
+* License
 
-Copyright (C) 2011 Kevin Downey
+Copyright (C) 2012 Kevin Downey
 
 Distributed under the Eclipse Public License, the same as Clojure.
