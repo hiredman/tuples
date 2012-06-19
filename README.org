@@ -1,7 +1,8 @@
 #+TITLE: tuples
 * Description
 
-tuples for clojure, with fast element access
+Provides "tuples" for Clojure, with faster element access, otherwise
+behaving like Clojure's vectors.
 
 * Usage
 
