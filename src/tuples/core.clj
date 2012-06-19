@@ -31,7 +31,29 @@
   (get6 [t])
   (get7 [t])
   (get8 [t])
-  (get9 [t]))
+  (get9 [t])
+  (get10 [t])
+  (get11 [t])
+  (get12 [t])
+  (get13 [t])
+  (get14 [t])
+  (get15 [t])
+  (get16 [t])
+  (get17 [t])
+  (get18 [t])
+  (get19 [t])
+  (get20 [t])
+  (get21 [t])
+  (get22 [t])
+  (get23 [t])
+  (get24 [t])
+  (get25 [t])
+  (get26 [t])
+  (get27 [t])
+  (get28 [t])
+  (get29 [t])
+  (get30 [t])
+  (get31 [t]))
 
 (defprotocol ITuple
   (tuple? [obj]))
@@ -66,7 +88,7 @@
          ITuple
          (tuple? [obj] true)
          TupleAccess
-         ~@(for [i (range 10)]
+         ~@(for [i (range 32)]
              `(~(symbol (str "get" i)) [~'t]
                ~(if (>= i n)
                   `(throw (UnsupportedOperationException.))
@@ -247,8 +269,16 @@
                   0)))))
          Serializable ; Marker
          )
-       (defmethod ~'tuple ~n [~@(map second(sort-by first fields))]
-         (new ~class-name ~@(map second(sort-by first fields)) {})))))
+       ~(if (> 21 (count fields))
+          `(defmethod ~'tuple ~n [~@(map second (sort-by first fields))]
+             (new ~class-name ~@(map second(sort-by first fields)) {}))
+          `(defmethod ~'tuple ~n [~@(take 19
+                                          (map second (sort-by first fields)))
+                                  ~'& ~'rest]
+             (new ~class-name ~@(take 19 (map second (sort-by first fields)))
+                  ~@(for [i (range 0 (- n 19))]
+                      `(nth ~'rest ~i))
+                  {}))))))
 
 (defmacro generate-tuples []
   (let [ns (ns-name *ns*)]
@@ -263,7 +293,7 @@
        ;; Screw it, using Tuple2 for a mapentry was just too much of a
        ;; pain, kept getting slimed
        (tuple-for 2 :class-name "TMapEntry")
-       ~@(for [i (range 11)]
+       ~@(for [i (range 33)]
            `(tuple-for ~i :map-entry-class "TMapEntry")))))
 
 (generate-tuples)
