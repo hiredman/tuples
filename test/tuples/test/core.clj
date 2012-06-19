@@ -43,3 +43,8 @@
        []          (pop (tuple 1))
        1           (peek (tuple 1))
        1           (get (tuple 1) 0)))
+
+(deftest t-conj
+  (is (= [0 1 2 3 4]
+         (into (tuple) (range 5))))
+  (is (tuple? (into (tuple) (range 5)))))

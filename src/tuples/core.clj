@@ -162,7 +162,8 @@
                            (str "Key " i# " is out of range for a "
                                 ~n "-tuple"))))))
          (cons [v# o#]
-           (apply ~'tuple (list ~@(map second (sort-by first fields)) o#)))
+           (~'tuple ~@(map second (sort-by first fields))
+                    o#))
          IFn
          (invoke [v# arg1#]
            (let [arg1# (int arg1#)]
