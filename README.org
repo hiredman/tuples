@@ -8,7 +8,7 @@ behaving like Clojure's vectors.
 
 - add to your project.clj:
 #+BEGIN_SRC clojure
-[tuples 0.0.1]
+[tuples 0.0.2]
 #+END_SRC
 
 #+BEGIN_SRC clojure
