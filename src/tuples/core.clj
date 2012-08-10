@@ -186,11 +186,21 @@
          IPersistentCollection
          (empty [v#] (apply ~'tuple nil))
          (equiv [v1# v2#]
-           (if (instance? Sequential v2#)
-             (if (= (count v2#) ~n)
-               (zero? (.compareTo v1# v2#))
-               false)
-             false))
+           (if (instance? Indexed v2#)
+             (let [^Indexed v2# v2#]
+               (cond
+                (not= (count v2#) ~n)
+                false
+                :else
+                (loop [i# 0]
+                  (if (> ~n i#)
+                    (if (Util/equiv (.nth v1# i#) (.nth v2# i#))
+                      (recur (inc i#))
+                      false)
+                    true))))
+             (if (instance? Sequential v2#)
+               (= (seq v1#) (seq v2#))
+               false)))
          Seqable
          (seq [v#]
            ~(if (zero? n)
@@ -254,7 +264,7 @@
            (throw (UnsupportedOperationException.)))
          Comparable
          (compareTo [v1# v2#]
-           (let [^IPersistentVector v2# v2#]
+           (let [^Indexed v2# v2#]
              (cond
               (> (count v2#) ~n)
               -1

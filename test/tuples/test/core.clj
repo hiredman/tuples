@@ -48,3 +48,9 @@
   (is (= [0 1 2 3 4]
          (into (tuple) (range 5))))
   (is (tuple? (into (tuple) (range 5)))))
+
+(deftest t-equiv
+  (is (.equiv (tuple 1 2 3)
+              '(1 2 3)))
+  (is (not (.equiv (tuple :foo)
+                   ["foo"]))))
