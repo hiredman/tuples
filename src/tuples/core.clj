@@ -279,6 +279,11 @@
                       c#))
                   0)))))
          Serializable ; Marker
+         Object
+         (equals [v1# v2#]
+             (.equiv v1# v2#))
+         (hashCode [v#]
+             (.hashCode (vec v#)))
          )
        ~(if (> 21 (count fields))
           `(defmethod ~'tuple ~n [~@(map second (sort-by first fields))]
