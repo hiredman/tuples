@@ -69,9 +69,11 @@
 (defmacro tuple-for [n & {:keys [class-name map-entry-class]}]
   (let [class-name (symbol (or class-name (format "Tuple%s" n)))
         fields (into {} (for [i (range n)]
-                          [i (symbol (format "e%s" (inc i)))]))]
+                          [i (symbol (format "e%s" (inc i)))]))
+        hash-code (gensym 'hash)]
     `(do
-       (deftype ~class-name [~@(map second (sort-by first fields)) md#]
+       (deftype ~class-name [~@(map second (sort-by first fields)) md#
+                             ~(with-meta hash-code {:volatile-mutable true})]
          ~@(when (= n 2)
              `[IMapEntry
                (key [v#]
@@ -103,7 +105,7 @@
                      ~@(for [[idx fn] fields
                              itm [idx (if map-entry-class
                                         `(new ~(symbol map-entry-class)
-                                              ~idx ~fn {})
+                                              ~idx ~fn {} nil)
                                         (first {idx fn}))]]
                          itm)
                      nil))
@@ -155,7 +157,8 @@
                                               (if (= idx idx2)
                                                 'val
                                                 fn))
-                                          {})]]
+                                          {}
+                                          nil)]]
                        itm)
                    ~(inc n) (.cons v# ~'val)
                    (throw (IllegalArgumentException.
@@ -180,7 +183,7 @@
                               (str ~(dec i) " args used for " ~n "-tuple")))))
          IObj
          (withMeta [v# m#]
-           (new ~class-name ~@(map second (sort-by first fields)) m#))
+           (new ~class-name ~@(map second (sort-by first fields)) m# nil))
          IMeta
          (meta [v#] (if md# md# {}))
          IPersistentCollection
@@ -281,20 +284,29 @@
          Serializable ; Marker
          Object
          (equals [v1# v2#]
-             (.equiv v1# v2#))
+           (.equiv v1# v2#))
          (hashCode [v#]
-             (.hashCode (vec v#)))
+           (if-not ~hash-code
+             (let [~'hash 1
+                   ~@(for [i (range n)
+                           e `[~'hash (+ (* ~'hash 31)
+                                         (Util/hasheq ~(get fields i)))]]
+                       e)]
+               (set! ~hash-code ~'hash)
+               ~'hash)
+             ~hash-code)
+           (.hashCode (vec v#)))
          )
        ~(if (> 21 (count fields))
           `(defmethod ~'tuple ~n [~@(map second (sort-by first fields))]
-             (new ~class-name ~@(map second(sort-by first fields)) {}))
+             (new ~class-name ~@(map second(sort-by first fields)) {} nil))
           `(defmethod ~'tuple ~n [~@(take 19
                                           (map second (sort-by first fields)))
                                   ~'& ~'rest]
              (new ~class-name ~@(take 19 (map second (sort-by first fields)))
                   ~@(for [i (range 0 (- n 19))]
                       `(nth ~'rest ~i))
-                  {}))))))
+                  {} nil))))))
 
 (defmacro generate-tuples []
   (let [ns (ns-name *ns*)]
@@ -304,7 +316,7 @@
                      (let [class-name# (symbol (format "%s.Tuple%s"
                                                        '~ns
                                                        (count ~'args)))]
-                       `(new ~class-name# ~@~'args nil)))}
+                       `(new ~class-name# ~@~'args {} nil)))}
          ~'tuple (comp count list))
        ;; Screw it, using Tuple2 for a mapentry was just too much of a
        ;; pain, kept getting slimed
