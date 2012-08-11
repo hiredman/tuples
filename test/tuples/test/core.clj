@@ -54,3 +54,21 @@
               '(1 2 3)))
   (is (not (.equiv (tuple :foo)
                    ["foo"]))))
+
+(deftest t-hashCode
+    (is (=
+        (.hashCode (tuple 1 2 3))
+        (.hashCode (tuple 1 2 3))))
+    (is (=
+        (.hashCode (tuple 1 2 3))
+        (.hashCode '(1 2 3))))
+)
+
+(deftest t-equals
+    (is (.equals (tuple 1 2 3) (tuple 1 2 3)))
+    (is (.equals (tuple 1 2 3) '(1 2 3)))
+    (is (.equals (tuple "foo" "bar") (tuple "foo" "bar")))
+    (is (not (.equals (tuple 1 2 3) (tuple "foo" "bar"))))
+)
+
+
